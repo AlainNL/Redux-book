@@ -1,0 +1,15 @@
+import React from 'react'
+
+const NavBar = () => {
+  return (
+    <header>
+        <div className="d-flex flex-column flex-md-row p-3 border-bottm bg-secondary text-white">
+            <h4 className='mr-md-auto'>
+                <a href="/" className="text-decoration-none text-white">NETBOOKS</a>
+            </h4>
+        </div>
+    </header>
+  )
+}
+
+export default NavBar
