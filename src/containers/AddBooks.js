@@ -1,6 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { addBook } from '../redux/actions/actionAddBooks';
 
-const AddBooks = () => {
+const AddBooks = ({ libraryData, addBook }) => {
+
+  console.log(libraryData)
+
+  const initialState = {
+    title: '',
+    author: ''
+  }
+
+  const [newData, setNewData] = useState(initialState)
+
+
+  const handleSubmit = (e) => {
+      e.preventDefault();
+      addBook(newData)
+
+      //empty input
+      setNewData(initialState)
+  }
+
   return (
     <main role="main">
         <div className="jumbotron jumbotron-fluid">
@@ -8,21 +29,25 @@ const AddBooks = () => {
                 <h1 className='display-4'>NETBOOKS</h1>
                 <p>Ajouter un liver à votre bibliothèque</p>
 
-                <form className="form-inline justify-content-center">
+                <form className="form-inline justify-content-center" onSubmit={handleSubmit}>
                     <div className='form-group'>
                         <input
+                            value={newData.title}
                             type="text"
                             className='form-control'
                             placeholder='Titre'
                             required
+                            onChange={ e => setNewData({...newData, title: e.target.value})}
                         />
                     </div>
                     <div className='form-group'>
                         <input
+                            value={newData.author}
                             type="text"
                             className='form-control ml-3'
                             placeholder='Auteur'
                             required
+                            onChange={ e => setNewData({...newData, author: e.target.value})}
                         />
                     </div>
                     <div className='form-group'>
@@ -51,4 +76,16 @@ const AddBooks = () => {
   )
 }
 
-export default AddBooks
+const addStateToProps = state => {
+    return {
+        libraryData: state.library
+    }
+}
+
+const addDispatchToProps = dispatch => {
+    return {
+        addBook: param => dispatch(addBook(param))
+    }
+}
+
+export default connect(addStateToProps, addDispatchToProps)(AddBooks)
