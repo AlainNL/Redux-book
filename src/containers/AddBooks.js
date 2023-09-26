@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { addBook } from '../redux/actions/actionAddBooks';
+import { addBook, deleteAllBooks, deleteBook } from '../redux/actions/actionAddBooks';
+import FlipMove from 'react-flip-move';
 
-const AddBooks = ({ libraryData, addBook }) => {
+const AddBooks = ({ libraryData, addBook, deleteBook, deleteAll }) => {
 
   console.log(libraryData)
 
@@ -21,6 +22,37 @@ const AddBooks = ({ libraryData, addBook }) => {
       //empty input
       setNewData(initialState)
   }
+
+  const displayData = libraryData.length > 0 ?
+
+    <FlipMove>
+    {
+        libraryData.map(data => {
+            return (
+              <li key={data.id} className='list-group-item list-group-item d-flex justify-content-between'>
+                  <span><strong>Titre: </strong> {data.title}</span>
+                  <span><strong>Auteur: </strong> {data.author}</span>
+                  <span
+                    className="btn btn-danger"
+                    onClick={() => deleteBook(data.id)}
+                  >x</span>
+              </li>
+            )
+        })
+    }
+    </FlipMove>
+
+    : <p className="text-center">Aucune data à afficher</p>
+
+
+  const deleteAllBooksBtn = libraryData.length > 0 &&
+      <div className='d-flex justify-content-center'>
+          <button
+              className='btn btn-danger mt-4 mb-5'
+              onClick={() => deleteAll()}
+          >Effacer tous les livres</button>
+      </div>
+
 
   return (
     <main role="main">
@@ -62,13 +94,9 @@ const AddBooks = ({ libraryData, addBook }) => {
             <div className="row">
                 <div className='col-md-12'>
                     <ul className='list-group'>
-                        <li className='list-group-item list-group-item d-flex justify-content-between'>
-                            livre enregistrés ici
-                        </li>
+                        {displayData}
                     </ul>
-                    <div className='d-flex justify-content-center'>
-                        <button className='btn btn-danger mt-4 mb-5'>Effacer tous les livres</button>
-                    </div>
+                    { deleteAllBooksBtn }
                 </div>
             </div>
         </div>
@@ -84,7 +112,9 @@ const addStateToProps = state => {
 
 const addDispatchToProps = dispatch => {
     return {
-        addBook: param => dispatch(addBook(param))
+        addBook: param => dispatch(addBook(param)),
+        deleteBook: id => dispatch(deleteBook(id)),
+        deleteAll: () => dispatch(deleteAllBooks())
     }
 }
 
