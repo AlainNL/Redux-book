@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchBooks } from '../redux/actions/actionFetchBooks';
+import { addBook } from '../redux/actions/actionAddBooks';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SearchBooks = () => {
 
@@ -18,7 +21,13 @@ const SearchBooks = () => {
       dispatch(fetchBooks(title))
   }
 
-  const displayFetchedBooks = state.isloading ? (
+  const handleSave = (title, author) => {
+    const bookToSave = { title, author }
+    dispatch(addBook(bookToSave))
+    toast.success('Livre enregistré', { position: toast.POSITION.TOP_RIGHT_LEFT})
+  }
+
+  const displayFetchedBooks = state.isLoading ? (
       <div className="d-flex justify-content-center">
           <div className='spinner-border text-info' role="status">
               <span className='sr-only'>Loading...</span>
@@ -60,7 +69,11 @@ const SearchBooks = () => {
                         target="_blank" rel="noopener noreferrer"
                         href={ data.volumeInfo.previewLink }
                         >Plus d'infos</a>
-                      <button className="btn btn-outline-secondary">Enregistrer</button>
+                      <button
+                        className="btn btn-outline-secondary"
+                        onClick={() => handleSave(data.volumeInfo.title, data.volumeInfo.authors)}
+                        >Enregistrer</button>
+                        <ToastContainer />
                   </div>
               </div>
           </div>
@@ -90,7 +103,9 @@ const SearchBooks = () => {
                             />
                         </div>
                         <div className='form-group'>
-                            <button className='btn btn-outline-secondary ml-3'>Rechercher</button>
+                            <button
+                              className='btn btn-outline-secondary ml-3'
+                              >Rechercher</button>
                         </div>
                     </form>
                 </div>
